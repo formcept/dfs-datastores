@@ -46,7 +46,7 @@ public class Pail<T> extends AbstractPail implements Iterable<T>{
                 _workers.put(targetDir, Pail.super.openWrite(p.toString(), _overwrite));
             }
             RecordOutputStream os = _workers.get(targetDir);
-            os.writeRaw(structure.serialize(obj));
+            os.writeRaw(structure.serialize(obj, _spec.getArgs()));
         }
 
         public void writeObjects(T... objs) throws IOException {
@@ -89,7 +89,7 @@ public class Pail<T> extends AbstractPail implements Iterable<T>{
         public T readObject() throws IOException {
             byte[] record = readRawRecord();
             if(record==null) return null;
-            else return _structure.deserialize(record);
+            else return _structure.deserialize(record, _spec.getArgs());
         }
 
         public void close() throws IOException {
