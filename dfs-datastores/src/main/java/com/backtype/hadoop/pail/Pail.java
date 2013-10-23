@@ -31,7 +31,7 @@ public class Pail<T> extends AbstractPail implements Iterable<T>{
 
         public <T> void writeObject(T obj) throws IOException {
             PailStructure<T> structure = ((PailStructure<T>) _structure);
-            List<String> rootAttrs = structure.getTarget(obj);
+            List<String> rootAttrs = structure.getTarget(obj, _spec.getArgs());
             List<String> attrs = makeRelative(rootAttrs);
             String targetDir = Utils.join(attrs, "/");
             if(!_workers.containsKey(targetDir)) {
@@ -39,7 +39,7 @@ public class Pail<T> extends AbstractPail implements Iterable<T>{
                 if(targetDir.length()==0) p = new Path(_userfilename);
                 else p = new Path(targetDir, _userfilename);
                 List<String> totalAttrs = componentsFromRoot(p.toString());
-                if(!_structure.isValidTarget(totalAttrs.toArray(new String[totalAttrs.size()]))) {
+                if(!_structure.isValidTarget(_spec.getArgs(),totalAttrs.toArray(new String[totalAttrs.size()]))) {
                     throw new IllegalArgumentException("Cannot write object " + obj.toString() + " to " + p.toString() +
                             ". Conflicts with the structure of the datastore.");
                 }
@@ -475,7 +475,7 @@ public class Pail<T> extends AbstractPail implements Iterable<T>{
         while(toCheck.size()>0) {
             String dir = toCheck.remove(0);
             List<String> dirComponents = componentsFromRoot(dir);
-            if(structure.isValidTarget(dirComponents.toArray(new String[dirComponents.size()]))) {
+            if(structure.isValidTarget(_spec.getArgs(), (dirComponents.toArray(new String[dirComponents.size()])))) {
                 consolidatedirs.add(toFullPath(dir));
             } else {
                 FileStatus[] contents = listStatus(new Path(toFullPath(dir)));
@@ -559,7 +559,7 @@ public class Pail<T> extends AbstractPail implements Iterable<T>{
         while(full.size()>0 && full.get(0).startsWith("_")) {
             full.remove(0);
         }
-        if(!getSpec().getStructure().isValidTarget(full.toArray(new String[full.size()]))) {
+        if(!getSpec().getStructure().isValidTarget(_spec.getArgs(), full.toArray(new String[full.size()]))) {
             throw new IllegalArgumentException(
                     userfilename + " is not valid with the pail structure " + getSpec().toString() +
                     " --> " + full.toString());

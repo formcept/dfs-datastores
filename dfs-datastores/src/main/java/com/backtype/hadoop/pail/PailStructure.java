@@ -9,10 +9,12 @@ import java.util.Map;
  */
 public interface PailStructure<T> extends Serializable {
     public boolean isValidTarget(String... dirs);
+    public boolean isValidTarget(Map<String, Object> args, String... dirs);
     public T deserialize(byte[] serialized);
     public T deserialize(byte[] serialized, Map<String,Object> args);
     public byte[] serialize(T object);
     public byte[] serialize(T object, Map<String,Object> args);
     public List<String> getTarget(T object);
+    public List<String> getTarget(T object, Map<String,Object> args);
     public Class getType();
 }

@@ -5,8 +5,13 @@ import com.backtype.support.Utils;
 
 import java.util.Collections;
 import java.util.List;
+import java.util.Map;
 
 public abstract class TimeSliceStructure<T> implements PailStructure<T> {
+
+    public final boolean isValidTarget(Map<String,Object> args, String... dirs) {
+        return isValidTarget(dirs);
+    }
 
     public final boolean isValidTarget(String... dirs) {
         if(dirs.length < 2) {
@@ -29,7 +34,11 @@ public abstract class TimeSliceStructure<T> implements PailStructure<T> {
         }
     }
 
-    public final List<String> getTarget(Object object) {
+    public final List<String> getTarget(T object, Map<String,Object> args) {
+        return getTarget(object);
+    }
+
+    public final List<String> getTarget(T object) {
         return Collections.EMPTY_LIST; // this isn't valid. At write time, a valid category must be provided
     }
 
