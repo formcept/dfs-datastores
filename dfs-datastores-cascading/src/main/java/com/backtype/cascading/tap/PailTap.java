@@ -86,7 +86,7 @@ public class PailTap extends Hfs {
       if (structure instanceof BinaryPailStructure) {
         return record;
       } else {
-        return structure.deserialize(Utils.getBytes(record));
+        return structure.deserialize(Utils.getBytes(record), getSpec().getArgs());
       }
     }
 
@@ -94,7 +94,7 @@ public class PailTap extends Hfs {
       if (obj instanceof BytesWritable) {
         ret.set((BytesWritable) obj);
       } else {
-        byte[] b = getStructure().serialize(obj);
+        byte[] b = getStructure().serialize(obj, getSpec().getArgs());
         ret.set(b, 0, b.length);
       }
     }
@@ -194,8 +194,8 @@ public class PailTap extends Hfs {
     _pailRoot = root;
   }
 
-  public PailTap(String root) {
-    this(root, new PailTapOptions());
+  public PailTap(String root) throws IOException {
+    this(root, new PailTapOptions(new Pail(root).getSpec(),"bytes",null,null));
   }
 
   @Override

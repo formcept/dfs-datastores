@@ -14,8 +14,9 @@ object DfsDatastoresBuild extends Build {
     javacOptions in doc := Seq("-source", "1.6"),
 
     libraryDependencies ++= Seq(
-      "com.novocode" % "junit-interface" % "0.10-M2" % "test",
+      "com.novocode" % "junit-interface" % "0.10-M2",
       // To silence warning in test logs. Library should depend only on the API.
+      "org.apache.hadoop" % "hadoop-core" % "0.20.2-cdh3u6" % "provided",
       "org.slf4j" % "slf4j-log4j12" % "1.6.6" % "test"
     ),
 
@@ -35,13 +36,14 @@ object DfsDatastoresBuild extends Build {
 
     pomIncludeRepository := { x => false },
 
-    publishTo <<= version { (v: String) =>
-      val nexus = "https://oss.sonatype.org/"
-      if (v.trim.endsWith("SNAPSHOT"))
-        Some("snapshots" at nexus + "content/repositories/snapshots")
-      else
-        Some("releases"  at nexus + "service/local/staging/deploy/maven2")
-    },
+    publishTo := Some(Resolver.file("file",  new File(Path.userHome.absolutePath+"/.m2/repository"))),
+    // publishTo <<= version { (v: String) =>
+    //   val nexus = "https://oss.sonatype.org/"
+    //   if (v.trim.endsWith("SNAPSHOT"))
+    //     Some("snapshots" at nexus + "content/repositories/snapshots")
+    //   else
+    //     Some("releases"  at nexus + "service/local/staging/deploy/maven2")
+    // },
 
     pomExtra := (
       <url>https://github.com/nathanmarz/dfs-datastores</url>
@@ -94,8 +96,7 @@ object DfsDatastoresBuild extends Build {
     libraryDependencies ++= Seq(
       "org.slf4j" % "slf4j-api" % "1.6.6",
       "jvyaml" % "jvyaml" % "1.0.0",
-      "com.google.guava" % "guava" % "13.0",
-      "org.apache.hadoop" % "hadoop-core" % "1.0.3" % "provided"
+      "com.google.guava" % "guava" % "13.0"
     )
   )
 
@@ -106,8 +107,8 @@ object DfsDatastoresBuild extends Build {
   ).settings(
     name := "dfs-datastores-cascading",
     libraryDependencies ++= Seq(
-      "cascading" % "cascading-core" % "2.0.8",
-      "cascading" % "cascading-hadoop" % "2.0.8"
+      "cascading" % "cascading-core" % "2.1.6",
+      "cascading" % "cascading-hadoop" % "2.1.6"
     )
   ).dependsOn(core)
 }
